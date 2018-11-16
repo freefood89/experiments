@@ -18,14 +18,35 @@ const links = [
 ]
 
 export default class App extends React.Component {
+  state = {
+    nodes: [
+      { id : "Alice" },
+      { id : "Bob" },
+      { id : "Carol" },
+    ],
+    links: [
+      { source: 0, target: 1}, // Alice → Bob
+      { source: 1, target: 2} // Bob → Carol
+    ]
+  }
+
   render() {
     return (
-      <ForceDirected
-        height={200}
-        width={400}
-        links={links}
-        node={nodes}
-        />
+      <React.Fragment>
+        <ForceDirected
+          height={200}
+          width={400}
+          links={this.state.links}
+          nodes={this.state.nodes}
+          />
+        <button onClick={() => this.setState({
+            nodes: [...this.state.nodes, {id: 'David'}],
+            links: [...this.state.links, {source: 0, target: 3}]
+          })}
+          >
+          Add Data
+        </button>
+      </React.Fragment>
     )
   }
 }

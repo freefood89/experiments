@@ -15,33 +15,44 @@ export default class ForceDirected extends React.Component {
 
 	componentDidMount() {
     const { simulation } = this
-    const { width, height } = this.props
+    const { nodes, links, width, height } = this.props
 
 		simulation.force('center', d3.forceCenter(width/2, height/2))
 		simulation.force('charge', d3.forceManyBody())
-
-		// simulation.nodes(data)
-		// simulation.on('tick',
-		// 	() => this.setState({
-		// 		nodePositions: simulation.nodes().map(x => {console.log(x); return x}).reduce(
-		// 			(obj, node) => Object.assign(obj, {
-		// 					[node.id]: node,
-		// 				}),
-		// 			{}
-		// 		)
-		// 	})
-		// )
-
-    // simulation.force('link', d3.forceLink(links))
     simulation.stop()
+		simulation.on('tick',
+			() => {
+        simulation.nodes().reduce(
+					(obj, node) => ({
+            ...obj,
+            [node.id]: node,
+          })
+        )
+        this.setState({})
+      }
+    )
+
+    if ( nodes || links ) {
+      this.setState({
+        nodes: [...nodes],
+        links: [...links]
+      })
+    }
 	}
 
-  componentDidUpdate() {
-    const { nodes, links } = this.state
-    if (nodes === null && links === null) {
+  componentDidUpdate(prevProps, prevState) {
+    const { state, props } = this
+    if (state.nodes !== prevState.nodes || state.links !== prevState.links) {
+      this.simulation.nodes(state.nodes)
+      this.simulation.force('link', d3.forceLink(state.links))
+      this.simulation.restart()
+      return
+    }
+
+    if (props.nodes !== prevProps.nodes || props.links !== prevProps.links) {
       this.setState({
-        nodes: [...this.props.nodes],
-        links: [...this.props.links]
+        nodes: [...props.nodes],
+        links: [...props.links]
       })
       this.simulation.restart()
     }
@@ -50,10 +61,6 @@ export default class ForceDirected extends React.Component {
 	componentWillUnmount() {
 		const { simulation } = this
 		simulation.on('tick', null)
-	}
-
-  startSimulation() {
-
   }
 
   render() {
@@ -74,7 +81,7 @@ export default class ForceDirected extends React.Component {
 					strokeWidth={1}
 					x={({ d }) => d.source.x }
 					y={({ d }) => d.source.y }
-					path={({ d }) => `M 0,0 L ${d.target.x - d.source.x},${d.target.y - d.source.y}`}
+					path={({ d }) => `M 0,0 L ${(d.target.x - d.source.x) || 0},${(d.target.y - d.source.y) || 0}`}
 					x2={({ d }) => d.target.x }
 					y2={({ d }) => d.target.y }
 					/>}
