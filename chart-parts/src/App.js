@@ -1,28 +1,31 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import * as React from 'react'
+import {Chart,Symbol,Path} from '@chart-parts/react'
+import {SymbolType} from '@chart-parts/interfaces'
+import { Renderer } from '@chart-parts/react-svg-renderer'
+import * as d3 from 'd3-force'
+import ForceDirected from './ForceDirected';
+const renderer = new Renderer()
 
-class App extends Component {
+const nodes = [
+  { id : "Alice" },
+  { id : "Bob" },
+  { id : "Carol" },
+]
+
+const links = [
+  {"source": 0, "target": 1}, // Alice → Bob
+  {"source": 1, "target": 2} // Bob → Carol
+]
+
+export default class App extends React.Component {
   render() {
     return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
+      <ForceDirected
+        height={200}
+        width={400}
+        links={links}
+        node={nodes}
+        />
+    )
   }
 }
-
-export default App;
