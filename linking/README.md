@@ -7,7 +7,7 @@ make main1
 ./main1
 ```
 
-2. Compile sum.c into a shared library (`.so) file
+2. Compile sum.c into a shared library (`.so`) file
 
 ```
 make shared
