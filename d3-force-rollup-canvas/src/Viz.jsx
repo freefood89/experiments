@@ -21,7 +21,7 @@ export class Viz extends React.Component {
   }
 
   componentDidUpdate() {
-    this.props.draw(this.svg, this.props.data)
+    this.props.draw(this.svg, this.props.data, this.root.current)
   }
 
   init() {

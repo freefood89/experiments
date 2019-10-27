@@ -7,7 +7,7 @@ const App = () => {
   const draw = (svg, data, rootEl) => {
     const { links, nodes } = data
     const { clientWidth, clientHeight } = rootEl
-    console.log(rootEl)
+
     const scale = d3.scaleOrdinal(d3.schemeCategory10);
     const color = d => scale(d.group);
     const drag = simulation => {
@@ -59,6 +59,14 @@ const App = () => {
         .attr("fill", color)
         .call(drag(simulation));
     
+
+    const fps = container.append('text')
+        .text(`FPS:`)
+        .attr('x', -clientWidth/2)
+        .attr('y', -clientHeight/2 + 16)
+        .attr("text-anchor", 'left')
+        .attr('font-size', '16px')
+
     svg.call(
       d3.zoom()
         .scaleExtent([1/2, 2])
@@ -66,6 +74,8 @@ const App = () => {
           container.attr('transform', d3.zoomTransform(this).toString())
         })
       )
+
+    let t0 = new Date()
 
     simulation.on("tick", () => {
       link
@@ -78,6 +88,9 @@ const App = () => {
           .attr("cx", d => d.x)
           .attr("cy", d => d.y);
 
+      const t1 = new Date()
+      fps.text(`FPS: ${Math.round(1000 / (t1 - t0))}`)
+      t0 = t1
     })
   }
 
