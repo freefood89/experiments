@@ -6,13 +6,15 @@ export class Viz extends React.Component {
     super()
     this.root = React.createRef()
     this.svg = null
+    this.canvas = null
     this.id = 'graph'
   }
 
   componentDidMount() {
     this.init()
     this.resize()
-    this.props.draw(this.svg, this.props.data, this.root.current)
+    // this.props.draw(this.svg, this.props.data, this.root.current)
+    this.props.draw(this.canvas, this.props.data, this.root.current)
     window.addEventListener('resize', this.resize.bind(this))
   }
 
@@ -21,7 +23,8 @@ export class Viz extends React.Component {
   }
 
   componentDidUpdate() {
-    this.props.draw(this.svg, this.props.data, this.root.current)
+    // this.props.draw(this.svg, this.props.data, this.root.current)
+    this.props.draw(this.canvas, this.props.data, this.root.current)
   }
 
   init() {
@@ -31,48 +34,35 @@ export class Viz extends React.Component {
     } = this.root.current
 
     // Clear existing viz
-    d3.select(`#${this.id}`)
-      .selectAll('svg')
-      .remove()
+    // d3.select(`#${this.id}`)
+    //   .selectAll('svg')
+    //   .remove()
 
-    this.svg = d3.select(`#${this.id}`)
-      .append('svg')
-      .attr('viewBox', `${-width / 2} ${-height / 2} ${width} ${height}`)
+    // this.svg = d3.select(`#${this.id}`)
+    //   .append('svg')
+    //   .attr('viewBox', `${-width / 2} ${-height / 2} ${width} ${height}`)
 
-    // const container = this.svg
-    //   .append('g')
-
-    // container.append("g")
-    //   .attr("stroke", "#999")
-    //   .attr("stroke-opacity", 1)
-    //   .attr("stroke-width", 1)
-    //   .attr("fill", "#999")
-    //   .attr("fill-opacity", 1)
-    //   .attr('id', LINK_GROUP_ID)
-
-    // container.append("g")
-    //   .attr('id', NODE_GROUP_ID)
-
-    // this._svg.call(
-    //   d3.zoom()
-    //     .scaleExtent([1/2, 2])
-    //     .on('zoom', function handleZoom() {
-    //       container.attr('transform', d3.zoomTransform(this).toString())
-    //     })
-    //   )
+    this.canvas = d3.select(`#${this.id}`)
+      .append("canvas")
+        .attr("width", width)
+        .attr("height", height);
   }
 
   resize() {
+    const {
+      clientWidth,
+      clientHeight
+    } = this.root.current
+
     if (this.svg) {
-      const {
-        clientWidth,
-        clientHeight
-      } = this.root.current
-  
       this.svg
         .attr('width', clientWidth)
         .attr('height', clientHeight)
         .attr('viewBox', `${-clientWidth / 2} ${-clientHeight / 2} ${clientWidth} ${clientHeight}`)
+    } else if (this.canvas) {
+      this.canvas
+        .attr('width', clientWidth)
+        .attr('height', clientHeight)
     }
   }
 
