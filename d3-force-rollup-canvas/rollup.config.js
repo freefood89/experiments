@@ -4,14 +4,18 @@ import babel from 'rollup-plugin-babel';
 import commonjs from 'rollup-plugin-commonjs';
 import replace from 'rollup-plugin-replace'
 import json from 'rollup-plugin-json';
+// import multi from '@rollup/plugin-multi-entry';
+import webWorkerLoader from 'rollup-plugin-web-worker-loader';
 
 export default {
   input: 'src/index.js',
   output: {
-    file: 'public/index.js',
+    dir: 'public',
     format: 'umd'
   },
+  format: 'esm',
   plugins: [
+    webWorkerLoader(/* configuration */),
     json({
       // generate a named export for every property of the JSON object
       namedExports: true // Default: true
